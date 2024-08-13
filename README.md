@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Personal Finance Tracker - README</title>
 </head>
 <body>
     <h1>Basic Personal Finance Tracker</h1>
@@ -41,7 +40,7 @@
     <h2>Installation</h2>
     <ol>
         <li><strong>Clone the Repository:</strong>
-            <pre><code>git clone https://github.com/yourusername/Basic-Personal-Finance-Tracker.git</code></pre>
+            <pre><code>git clone https://github.com/achalnm/Basic-Personal-Finance-Tracker.git</code></pre>
         </li>
         <li><strong>Navigate to the Project Directory:</strong>
             <pre><code>cd Basic-Personal-Finance-Tracker</code></pre>
@@ -66,4 +65,12 @@
     </ul>
     <p>For additional information or troubleshooting, please refer to the <a href="https://flask.palletsprojects.com/">Flask documentation</a>.</p>
 </body>
+        <footer>
+        <p>Made by @achalnm</p>
+        <p>
+            <a href="https://github.com/achalnm" target="_blank">GitHub</a> |
+            <a href="https://www.linkedin.com/in/achal-n-35153821b/" target="_blank">LinkedIn</a> |
+            <a href="https://instagram.com/achal_n26" target="_blank">Instagram</a>
+        </p>
+    </footer>
 </html>
