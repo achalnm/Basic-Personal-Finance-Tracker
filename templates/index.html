@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker</title>
+    <style>
+        /* Basic styles for the page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header, footer {
+            background-color: #333;
+            color: #fff;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin-right: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Personal Finance Tracker</h1>
+    </header>
+
+    <main>
+        <h2>Add Transaction</h2>
+        <form id="transaction-form">
+            <input type="date" id="date" required>
+            <input type="number" id="amount" placeholder="Amount" step="0.01" required>
+            <input type="text" id="description" placeholder="Description" required>
+            <button type="submit">Add Transaction</button>
+        </form>
+
+        <h2>Transactions</h2>
+        <ul id="transaction-list"></ul>
+
+        <h2>Daily Breakdown</h2>
+        <ul id="daily-breakdown"></ul>
+
+        <h2>Total Amount Spent</h2>
+        <p id="total-amount">$0.00</p>
+
+        <button id="delete-latest">Delete Latest Entry</button>
+        <button id="delete-all">Delete All Transactions</button>
+    </main>
+
+    <footer>
+        <p>Made by @achalnm</p>
+        <p>
+            <a href="https://github.com/achalnm" target="_blank">GitHub</a> |
+            <a href="https://www.linkedin.com/in/achal-n-35153821b/" target="_blank">LinkedIn</a> |
+            <a href="https://instagram.com/achal_n26" target="_blank">Instagram</a>
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('transaction-form');
+            const transactionList = document.getElementById('transaction-list');
+            const dailyBreakdownElem = document.getElementById('daily-breakdown');
+            const totalAmountElem = document.getElementById('total-amount');
+            const deleteLatestBtn = document.getElementById('delete-latest');
+            const deleteAllBtn = document.getElementById('delete-all');
+
+            let totalAmount = 0;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const date = document.getElementById('date').value;
+                const amount = parseFloat(document.getElementById('amount').value);
+                const description = document.getElementById('description').value;
+
+                const response = await fetch('/api/transactions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date, amount, description })
+                });
+
+                if (response.ok) {
+                    loadTransactions();
+                }
+            });
+
+            deleteLatestBtn.addEventListener('click', async () => {
+                const response = await fetch('/api/transactions/latest', { method: 'DELETE' });
+                if (response.ok) {
+                    loadTransactions();
+                }
+            });
+
+            deleteAllBtn.addEventListener('click', async () => {
+                const response = await fetch('/api/transactions/all', { method: 'DELETE' });
+                if (response.ok) {
+                    loadTransactions();
+                }
+            });
+
+            async function loadTransactions() {
+                const response = await fetch('/api/transactions');
+                const data = await response.json();
+                const transactions = data.transactions;
+                const dailyBreakdown = data.daily_breakdown;
+
+                transactionList.innerHTML = transactions.map(tx =>
+                    `<li>${tx.date} - ${tx.description}: $${tx.amount.toFixed(2)}</li>`
+                ).join('');
+
+                dailyBreakdownElem.innerHTML = Object.entries(dailyBreakdown)
+                    .map(([date, amount]) => `<li>${date}: $${amount.toFixed(2)}</li>`)
+                    .join('');
+
+                // Calculate total amount
+                totalAmount = transactions.reduce((total, tx) => total + tx.amount, 0);
+                totalAmountElem.textContent = `$${totalAmount.toFixed(2)}`;
+            }
+
+            loadTransactions();
+        });
+    </script>
+</body>
+</html>
